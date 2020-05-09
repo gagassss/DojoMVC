@@ -1,5 +1,8 @@
 # what is Dojomvc
-*dojomvc is framework PHP MVC for anyone who build a web sites.
+*dojomvc is framework PHP MVC for anyone who build a web sites. this is open source, so u can add features, fix some a bug*
+
+# Dojomvc version
+*V.1.0*
 
 # Requirements
 *PHP version ^5.6*
@@ -9,128 +12,113 @@
 - *with a basic query database : CRUD, Where, select, orderBy, Limit clauses*
 - *pretty URLs*
 
-# folder
-1. public folder
-contains something that will be presented / displayed to the user, allowing you to save CSS, Javascript files and images
-2. app folder
+# User guide
+
+## folder
+**1. public folder**
+contains something that will be presented / displayed to the user, allowing you to save CSS, Javascript files and images.
+
+**2. app folder**
 contains something that cannot be seen by the user except you (the developer).
 
-# model-view-controller
+## model-view-controller
 Dojomvc is based on the model-view-controller,sure with helper query database
-1. The Model represents your data structures. Typically your model classes will contain functions that help you retrieve, insert, and update information in your database.
+**1. The Model** represents your data structures. Typically your model classes will contain functions that help you retrieve, insert, and update information in your database.
 
-2. The View is the information that is being presented to a user. A View will normally be a web page, but in Dojomvc, a view can also be a page fragment like a header or footer. It  can also be an RSS page, or any other type of “page”.
+**2. The View** is the information that is being presented to a user. A View will normally be a web page, but in dojoMVC, a view can also be a page fragment like a header or footer. It  can also be an RSS page, or any other type of “page”.
 
-3. The Controller serves as an intermediary between the Model, the View, and any other resources needed to process the HTTP request and generate a web page.
+**3. The Controller** serves as an intermediary between the Model, the View, and any other resources needed to process the HTTP request and generate a web page.
 
-# URI Segments
-
-The segments in the URL, in following with the Model-View-Controller approach, usually represent.
-
-> example.com/class/function/ID
-
-1. The first segment represents the controller class.
-1. The second segment represents the class function, or method, that should be called.
-1. The third, and any additional segments, represent the ID and any variables that will be passed to the controller.
-
-
-# controllers
+## controllers
+**1. what is a controllers**
 A Controller is simply a class file that is named in a way that can be associated with a URI.
 
-**define your controller**
-
-if you want to make your own controller make sure it extends to 'Dojo_controller', by default, the default controller is 'Home', and you can change it in ***/app/core/config.php***.
-
-if the user types the controller in a url that does not exist, the default controller will be used and the default controller will run when a web is opened, each controller must have a default method with the name index.
-
-example, lets say user trying to access this URI :    
-> **http://example.com/blog**
-
-and then you can define your controller like this :    
-
+**2. create yourself controllers**
+if you make your own controller make sure it extends to **'Dojo_controller'**, by default, the default controller is **'home'**, and you can change this in file config.php.
+if the user types the controller in a url that does not exist, the default controller will be used and the default controller will run when a web is opened, each controller must have a default method with the name **index**.
+example :
 ```php
-class blog extends Dojo_controller
+class Home extends Dojo_controller
 {
   public function index()
   {
-    echo "hello world";
+    //
   }
 }
 ```
 
-> keep it mind that controller name is case-sensitive, if the path url is **/blog** so you need give name the controller **blog** not **Blog**
+**3. Organizing Your Controllers**
+separate each controllers in a different file or Sub-directories.
+controllers are stored in your **app/controllers/here**
 
-# method
-The “index” method is always loaded by default if the second segment of the URI is empty.
+## method
+In the above example the method name is index(). The “index” method is always loaded by default if the second segment of the URI is empty.
 
-**The second segment of the URI determines which method in the controller gets called.**
-
-lets try add a new method to your controller
-
+example :
 ```php
-class blog extends Dojo_controller
+class Home extends Dojo_controller
 {
   public function index() // index is a default method
   {
-    echo "hello world";
+
   }
-  public function read() {
-    echo "its hello world from read method!";
-  }
-} 
+}
 ```
 
-# Dynamic route
+## models
+**1. what is a model**
+"Models are PHP classes that are designed to work with information in your database. You might have a model class that contains functions to insert, update, and retrieve your blog data". -codeigniter.
+if you make your own models make sure it extends to **'Dojo_model'.**
 
-if your URI contains more than two segments they will be passed to your method as parameters.
+**2. Organizing Your models**
+separate each models in a different file or Sub-directories.
+models are stored in your app/models/here
 
-lets say you have a URI like this:   
+**3. load and called model**
+the model will be loaded and called from your controller, to load the model you must use the following method : 
+**$this->model('model_name')->method_name();**
 
-> example.com/user/detail/12
+if the model is in a sub-directory, include the relative path from your models directory. For example, if you have a model located at **app/models/blog/user.php** you load it using:
+**$this->model->('blog/user');**
 
-your method will passed URI segments 3 (12):    
+that a example of a controller, that load a model : 
 
-```php
-<?php 
-  class user extends Dojo_controller {
-
-    public function detail($id) {
-      echo $id;
-    }
-
-  }
-
-?>
-```
-
-# models
-if you make your own models make sure it extends to 'Dojo_model'.
-
-**load and called model**
-if the model is in a sub-directory, include the relative path from your models directory. For example, if you have a model located at app/models/blog/user.php you load it using:
-$this->model->('blog/user');
-
-example :    
 ```php
 class home extends Dojo_controller
 {
   public function index()
   {
-    $this->model->('movies')->get_movies();
+    $this->model->('blog')->user();
+  }
+}
+```
+**4. create a model**
+```php
+class blog extends Dojo_model
+{
+  public function user()
+  {
+    //
   }
 }
 ```
 
-# views
+## views
+**1. what is a view**
 A view is simply a web page, or a page fragment, like a header, footer, sidebar, etc. In fact, views can flexibly be embedded within other views (within other views, etc., etc.) if you need this type of hierarchy.
 
-**load view**
+Views are never called directly, they must be loaded by a controller. Remember that in an MVC framework, the Controller acts as the traffic cop, so it is responsible for fetching a particular view. If you have not read the Controllers page you should do so before continuing.
 
-the view will be called from your controller, to load the view you must use the following method : 
-$this->view('view_name');
+**## load and called view**
 
-example:   
+the view will be loaded and called from your controller, to load the model you must use the following method : 
+**$this->view('view_name');**
 
+## storing view with sub-directories
+Your view files can also be stored within sub-directories if you prefer that type of organization. When doing so you will need to include the directory name loading the view. Example : 
+**$this->view('directory_name/file_name');**
+
+for example of a controller, that load a view : 
 ```php
 class home extends Dojo_controller
 {
@@ -141,22 +129,20 @@ class home extends Dojo_controller
 }
 ```
 
-# passing data to the view
+## send data to view
 
-you can passing data to the view, look this example:   
-
+Data is passed from the controller to the view by way of an object in the second parameter of the view loading method. Here is an example using an array : 
 ```php
 class home extends Dojo_controller
 {
   public function index()
   {
-    $data['user'] = $this->model('user')->get_user(); // data obtained from database queries and then sent to view
-    $data['page'] = 'homepage';
-    $this->view->('homepage', $data);
+    $data['user'] = $this->db->get_data('user'); // data obtained from database queries and then sent to view
+    $data['page'] = 'login';
+    $this->view->('login', $data);
   }
 }
 ```
-
 in the file view, using data that has been sent from the controller can be in the following way, example : 
 ```php
 <!DOCTYPE html>
@@ -165,11 +151,10 @@ in the file view, using data that has been sent from the controller can be in th
   <title><?php echo $data['page']; ?></title>
 </head>
 <body>
-  <?php echo $data['user']; ?>
+  <?php var_dump($data['user']); ?>
 </body>
 </html>
 ```
-
 ## database
 
 **1. config database**
@@ -300,3 +285,4 @@ $data = [
 $this->db->where(['first_name' => 'morgen']);
 $this->db->update_data('user', $data);
 ```
+
